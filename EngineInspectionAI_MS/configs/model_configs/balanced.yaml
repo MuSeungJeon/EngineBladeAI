@@ -1,0 +1,27 @@
+# Balanced model - 성능과 속도의 균형
+name: "balanced_model"
+description: "균형잡힌 성능의 통합 모델"
+
+backbone:
+  type: convnext_fpn
+  model_name: tiny
+  pretrained: true
+  fpn_channels: 256
+  use_fpn: true
+
+blade_head:
+  in_channels: 256
+  num_classes: 2
+  dropout_rate: 0.1
+
+damage_head:
+  in_channels: 256
+  num_classes: 3
+  use_soft_gating: true
+  boundary_margin: 10
+
+training:
+  freeze_backbone: false
+  freeze_blade_head: true
+  blade_checkpoint: "best_unified_blade_model.pth"
+  damage_checkpoint: null

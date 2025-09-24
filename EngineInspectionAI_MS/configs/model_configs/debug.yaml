@@ -1,0 +1,27 @@
+# Debug model - 테스트/디버깅용
+name: "debug_model"
+description: "빠른 테스트를 위한 최소 모델"
+
+backbone:
+  type: convnext_fpn
+  model_name: tiny
+  pretrained: false  # 빠른 초기화
+  fpn_channels: 128  # 작은 채널
+  use_fpn: false
+
+blade_head:
+  in_channels: 128
+  num_classes: 2
+  dropout_rate: 0.0
+
+damage_head:
+  in_channels: 128
+  num_classes: 3
+  use_soft_gating: false
+  boundary_margin: 0
+
+training:
+  freeze_backbone: false
+  freeze_blade_head: false
+  blade_checkpoint: null
+  damage_checkpoint: null

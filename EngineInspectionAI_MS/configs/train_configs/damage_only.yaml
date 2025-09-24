@@ -1,0 +1,65 @@
+# Damage detection only training
+name: "damage_training"
+description: "Head-B (손상 검출) 학습 설정"
+
+model:
+  config_file: "configs/model_configs/balanced.yaml"
+  freeze_blade_head: true  # Head-A 고정
+
+data:
+  root_path: "C:/EngineBladeAI/EngineInspectionAI_MS/data"
+  damage_data_path: "multilabeled_data_augmented"
+  batch_size: 4
+  num_workers: 4
+  augmentation:
+    rotation: true
+    flip: true
+    blur: true
+    brightness: true
+    contrast: true
+
+optimizer:
+  type: "AdamW"
+  lr: 1e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  different_lr:
+    backbone: 5e-5  # 백본은 작은 lr
+    damage_head: 1e-4  # 헤드는 큰 lr
+
+scheduler:
+  type: "CosineAnnealingWarmRestarts"
+  T_0: 10
+  T_mult: 2
+  eta_min: 1e-6
+
+training:
+  epochs: 30
+  gradient_clip: 1.0
+  mixed_precision: true
+  accumulate_grad_batches: 2  # Gradient accumulation
+  early_stopping:
+    patience: 7
+    min_delta: 0.001
+    monitor: "val_f1"
+
+loss:
+  segmentation:
+    type: "CrossEntropyLoss"
+    weight: 1.0
+  multilabel:
+    type: "BCELoss"
+    weight: 2.0
+  dice:
+    weight: 0.5
+  focal:
+    weight: 0.5
+    alpha: 0.25
+    gamma: 2.0
+
+logging:
+  log_interval: 10
+  save_interval: 5
+  tensorboard: true
+  wandb: false
+  save_best_only: true
