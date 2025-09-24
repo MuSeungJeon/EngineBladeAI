@@ -1,0 +1,48 @@
+# Blade detection only training
+name: "blade_training"
+description: "Head-A (블레이드 검출) 학습 설정"
+
+model:
+  config_file: "configs/model_configs/balanced.yaml"
+  use_damage_head: false  # Head-B 비활성화
+
+data:
+  root_path: "C:/EngineBladeAI/EngineInspectionAI_MS/data"
+  blade_data_path: "blade_data"
+  batch_size: 8
+  num_workers: 4
+  augmentation:
+    rotation: true
+    flip: true
+    blur: false
+    brightness: true
+
+optimizer:
+  type: "AdamW"
+  lr: 1e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+
+scheduler:
+  type: "CosineAnnealingLR"
+  T_max: 50
+  eta_min: 1e-6
+
+training:
+  epochs: 50
+  gradient_clip: 1.0
+  mixed_precision: true
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+    monitor: "val_iou"
+
+loss:
+  type: "CrossEntropyLoss"
+  weights: [0.3, 0.7]  # background, blade
+
+logging:
+  log_interval: 10
+  save_interval: 5
+  tensorboard: true
+  wandb: false

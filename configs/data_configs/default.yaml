@@ -1,0 +1,70 @@
+# Default data configuration
+name: "default_data"
+description: "기본 데이터 설정"
+
+dataset:
+  blade:
+    root: "C:/EngineBladeAI/EngineInspectionAI_MS/data/blade_data"
+    format: "coco"
+    splits:
+      train: 0.7
+      valid: 0.15
+      test: 0.15
+  
+  damage:
+    root: "C:/EngineBladeAI/EngineInspectionAI_MS/data/multilabeled_data_augmented"
+    format: "coco"
+    classes: ["Crack", "Nick", "Tear"]
+    
+preprocessing:
+  image_size: [640, 640]
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  
+augmentation:
+  train:
+    random_rotate:
+      prob: 0.5
+      degrees: [-90, 90]
+    horizontal_flip:
+      prob: 0.5
+    vertical_flip:
+      prob: 0.3
+    random_brightness:
+      prob: 0.3
+      limit: 0.2
+    random_contrast:
+      prob: 0.3
+      limit: 0.2
+    gaussian_blur:
+      prob: 0.2
+      kernel_size: [3, 7]
+    
+  valid:
+    # No augmentation for validation
+    
+  test:
+    # No augmentation for test
+
+dataloader:
+  train:
+    batch_size: 4
+    shuffle: true
+    num_workers: 4
+    pin_memory: true
+    drop_last: true
+    
+  valid:
+    batch_size: 4
+    shuffle: false
+    num_workers: 4
+    pin_memory: true
+    drop_last: false
+    
+  test:
+    batch_size: 1
+    shuffle: false
+    num_workers: 2
+    pin_memory: true
+    drop_last: false

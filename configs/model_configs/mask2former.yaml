@@ -1,0 +1,17 @@
+# configs/model_configs/mask2former.yaml
+damage_head:
+  type: "mask2former"
+  in_channels: 256
+  num_classes: 3
+  num_queries: 200
+  hidden_dim: 256
+  num_heads: 8
+  dec_layers: 6
+  dim_feedforward: 1024
+  dropout: 0.1
+  use_blade_mask: true
+
+training:
+  learning_rate: 0.00001  # Mask2Former는 더 작은 lr
+  gradient_clip: 0.1      # 더 작은 gradient clipping
+  mixed_precision: false  # 처음엔 비활성화 (안정성)

@@ -1,0 +1,35 @@
+# Fine-tuning configuration
+name: "finetune"
+description: "기존 모델 fine-tuning 설정"
+
+model:
+  config_file: "configs/model_configs/best_performance.yaml"
+  pretrained_checkpoint: "best_damage_model.pth"
+  
+data:
+  root_path: "C:/EngineBladeAI/EngineInspectionAI_MS/data"
+  damage_data_path: "multilabeled_data_augmented"
+  batch_size: 2  # 작은 배치
+  num_workers: 4
+
+optimizer:
+  type: "SGD"  # Fine-tuning엔 SGD가 좋을 수 있음
+  lr: 1e-5  # 매우 작은 learning rate
+  momentum: 0.9
+  weight_decay: 0.0001
+
+scheduler:
+  type: "StepLR"
+  step_size: 5
+  gamma: 0.5
+
+training:
+  epochs: 10  # 짧은 학습
+  gradient_clip: 0.5
+  mixed_precision: false  # 안정성을 위해 비활성화
+
+loss:
+  # 기존과 동일
+  
+logging:
+  experiment_name: "finetune_experiment"
